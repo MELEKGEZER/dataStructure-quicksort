@@ -1,16 +1,12 @@
 package quicksortodevi;
 
-
 import java.util.Random;
 
-
 public class QuikSortÖdevi {
-
 
     public static int pivotBulma(int[] dizi, int yuzde) {
         return (int) Math.floor(dizi.length * yuzde / 100.0);
     }
-
 
     public static int quicksort(int[] dizi, int pivotIndex,int yuzdelik) {
         int temp = 0;
@@ -64,7 +60,6 @@ public class QuikSortÖdevi {
 
         }
 
-
         int işlemSayısı = Integer.MAX_VALUE;//en iyi işlemi bulmak için
         int EnİyiPivot = 0;
         for (int i = 0; i < 100; i += 10) {
@@ -81,7 +76,6 @@ public class QuikSortÖdevi {
         System.out.println("\n**********************\n");
         System.out.println(" EN UYGUN PIVOT = %" + EnİyiPivot + " Islem Sayisi = " + işlemSayısı);
         System.out.println();
-
 
     }
 

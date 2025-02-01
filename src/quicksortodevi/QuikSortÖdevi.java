@@ -1,82 +1,81 @@
 package quicksortodevi;
 
 import java.util.Random;
+import java.util.Arrays;
 
-public class QuikSortÖdevi {
+public class QuickSortOdevi {
 
     public static int pivotBulma(int[] dizi, int yuzde) {
         return (int) Math.floor(dizi.length * yuzde / 100.0);
     }
 
-    public static int quicksort(int[] dizi, int pivotIndex,int yuzdelik) {
-        int temp = 0;
-        if (dizi.length <= 1) {
-            return temp;
+    public static int quicksort(int[] dizi, int low, int high) {
+        if (low >= high) {
+            return 0;
         }
-        //System.out.println(array.length);
-        int pivot = dizi[pivotIndex];
-        int i = 0;
-        int j = dizi.length - 1;
-        while (i < j) {
-            while (dizi[i] < pivot) {
+
+        int pivot = dizi[high];
+        int i = low - 1;
+        int swapCount = 0;
+
+        for (int j = low; j < high; j++) {
+            if (dizi[j] < pivot) {
                 i++;
-            }
-            while (dizi[j] > pivot) {
-                j--;
-            }
-            if (i < j) {
-                int temp2 = dizi[i];
+                int temp = dizi[i];
                 dizi[i] = dizi[j];
-                dizi[j] = temp2;
-                temp++;
+                dizi[j] = temp;
+                swapCount++;
             }
         }
-        int[] sol = new int[i];
-        int[] sag = new int[dizi.length - i - 1];
-        System.arraycopy(dizi, 0, sol, 0, i);
-        System.arraycopy(dizi, i + 1, sag, 0, dizi.length - i - 1);
-        int yeniYuzde=100-yuzdelik;
-        int yeniSolYuzde=100-yeniYuzde;
-        temp += quicksort(sol, pivotBulma(sol, yuzdelik),yuzdelik);
-        temp += quicksort(sag, pivotBulma(sag, yuzdelik),yuzdelik);
-        return temp;//yapılan işlem sayısını geri döndürme
+
+        int temp = dizi[i + 1];
+        dizi[i + 1] = dizi[high];
+        dizi[high] = temp;
+        swapCount++;
+
+        int partitionIndex = i + 1;
+        swapCount += quicksort(dizi, low, partitionIndex - 1);
+        swapCount += quicksort(dizi, partitionIndex + 1, high);
+
+        return swapCount;
     }
 
     public static void main(String[] args) {
         int[] dizi = new int[100];
         Random random = new Random();
-        int rand;
-        int[] kontrol = new int[100];
-        rand = random.nextInt();
+        boolean[] kontrol = new boolean[101];
 
         for (int i = 0; i < 100; i++) {
+            int rand;
             do {
                 rand = random.nextInt(100) + 1;
-            } while (kontrol[rand - 1] == 1);
+            } while (kontrol[rand]);
 
-            kontrol[rand - 1] = 1;
+            kontrol[rand] = true;
             dizi[i] = rand;
-            System.out.print(dizi[i] + ",");
-
         }
 
-        int işlemSayısı = Integer.MAX_VALUE;//en iyi işlemi bulmak için
-        int EnİyiPivot = 0;
-        for (int i = 0; i < 100; i += 10) {
-            int pivotIndex = pivotBulma(dizi, i);
-            //System.out.println("ilk pivot"+pivotIndex);
-            int gecici = quicksort(dizi, pivotIndex,i);
-            if (gecici < işlemSayısı) {
-                işlemSayısı = gecici;
-                EnİyiPivot = pivotIndex;
+        System.out.println("Başlangıç Dizisi: " + Arrays.toString(dizi));
+
+        int enIyiIslemSayisi = Integer.MAX_VALUE;
+        int enIyiPivot = 0;
+        int[] enIyiDizi = new int[100];
+
+        for (int i = 10; i <= 90; i += 10) {
+            int[] kopyaDizi = Arrays.copyOf(dizi, dizi.length);
+            int pivotIndex = pivotBulma(kopyaDizi, i);
+
+            int islemSayisi = quicksort(kopyaDizi, 0, kopyaDizi.length - 1);
+
+            if (islemSayisi < enIyiIslemSayisi) {
+                enIyiIslemSayisi = islemSayisi;
+                enIyiPivot = i;
+                enIyiDizi = Arrays.copyOf(kopyaDizi, kopyaDizi.length);
             }
         }
 
-        System.out.println();
         System.out.println("\n**********************\n");
-        System.out.println(" EN UYGUN PIVOT = %" + EnİyiPivot + " Islem Sayisi = " + işlemSayısı);
-        System.out.println();
-
+        System.out.println("EN UYGUN PIVOT = %" + enIyiPivot + " İşlem Sayısı = " + enIyiIslemSayisi);
+        System.out.println("Sıralı Dizi: " + Arrays.toString(enIyiDizi));
     }
-
 }
